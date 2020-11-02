@@ -45,7 +45,10 @@ namespace PSCore.Controllers
                 var _user = this.User;
                 //_userService.
 
-                var resp = await _mediator.Send(new GetHVNUserQuery());
+                var resp = await _mediator.Send(new GetHVNUserQuery()
+                {
+                    caller = this.User.ToString()
+                });
                 return resp;
 
                 //UserRepository repo = new UserRepository(Configuration, this.User);

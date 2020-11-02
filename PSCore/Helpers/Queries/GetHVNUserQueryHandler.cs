@@ -21,6 +21,7 @@ namespace PSCore.Helpers.Queries
 
         Task<HVNUser> IRequestHandler<GetHVNUserQuery, HVNUser>.Handle(GetHVNUserQuery request, CancellationToken cancellationToken)
         {
+            var caller = request.caller;
             return _userRepository.GetHVNUserAsync(cancellationToken);
         }
     }
