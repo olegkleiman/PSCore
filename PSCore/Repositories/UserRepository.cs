@@ -5,15 +5,16 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PSCore.Repositories
 {
-    public class UsersRepository
+    public class UserRepository : Repository<HVNUser>, IUserRepository
     {
         public IConfiguration Configuration { get; }
 
-        public UsersRepository(IConfiguration config, ClaimsPrincipal user)
+        public UserRepository(IConfiguration config)
         {
             Configuration = config;
         }
@@ -50,6 +51,21 @@ namespace PSCore.Repositories
                 }
             }
 
+        }
+
+        public async Task<HVNUser> GetHVNUserAsync(CancellationToken cancellationToken)
+        {
+            return this.Me();
+        }
+
+        public Task<HVNUser> GetHVNUserByIdAsync(Guid orderId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<HVNUser>> GetHVNUserByGuidAsync(Guid customerId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

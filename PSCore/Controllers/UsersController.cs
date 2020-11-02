@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using PSCore.Helpers;
+using PSCore.Helpers.Queries;
+using PSCore.Models;
 using PSCore.Repositories;
 
 namespace PSCore.Controllers
@@ -16,28 +19,37 @@ namespace PSCore.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
+        private readonly IMediator _mediator;
 
         public IConfiguration Configuration { get; }
         public string connStr = String.Empty;
 
-        public UsersController(IConfiguration configuration, IWebHostEnvironment env, IUserService userService)
+        public UsersController(IConfiguration configuration, 
+                                IWebHostEnvironment env, 
+                                IUserService userService,
+                                IMediator mediator)
         {
             Configuration = configuration;
             _userService = userService;
+            _mediator = mediator;
         }
 
         [Route("me")]
         [TLVAuthorize]
         [HttpGet]
-        public async Task<IActionResult> Me()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<HVNUser>> Me()
         {
             try
             {
                 var _user = this.User;
                 //_userService.
 
-                UsersRepository repo = new UsersRepository(Configuration, this.User);
-                return CreatedAtAction("me", repo.Me());
+                var resp = await _mediator.Send(new GetHVNUserQuery());
+                return resp;
+
+                //UserRepository repo = new UserRepository(Configuration, this.User);
+                //return CreatedAtAction("me", repo.Me());
             }
             catch (Exception ex)
             {
